@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    {% load staticfiles %}
+    <link rel="stylesheet" href="{% static 'styles/logreg/login.css' %}"media="screen" title="no title"  charset="utf-8">
+    <title>Login and Registration</title>
+  </head>
+
+  <body>
+	<body>
+		{% if messages %}
+			{% for message in messages %}
+        		<li{% if message.ERROR %} class="{{ message.ERROR }}"{% endif %}>{{ message }}</li>
+			{% endfor %}
+		{% endif %}
+    	<div id="main">
+    	    <div class="block"> 	
+    			<form action="{% url 'login:register' %}" method="POST">
+    				{% csrf_token %}
+          			<h4>Register</h4>
+ 					<label>First Name:<input type = "text" name = "first"></label>
+					<label>Last Name:<input type = "text" name = "last"></label>
+					<label>Email:<input type = "text" name = "email"></label>
+					<label>Password:<input type = "password" name = "password"></label>
+					<label>Confirm Password:<input type = "password" name = "confirm"></label>
+					<input type = "submit" value = "Register">
+    			</form>
+    		</div>
+    		<div class="block">
+    			<form id="form" action="{% url 'login:login' %}" method="POST">
+    				{% csrf_token %}
+          			<h4>Login</h4>
+					<label>Email:<input type = "text" name = "email"></label>
+					<label>Password:<input type = "password" name = "password"></label>
+					<input type = "submit" value = "Login">
+    			</form>
+    		</div>
+   		</div>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Posts</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'styles/forums/home.css' %}"media="screen" title="no title"  charset="utf-8">
+	</head>
+	<body>
+		<div id="header">
+            <h1>Wardrobe Cult Forums</h1>
+            <div id="links">
+                <a href="https://www.wardrobecult.com/">Home</a>
+                <a href = "{% url 'forum:index' %}">Boards</a>
+                <a href = "{% url 'forum:logout' %}">Logout</a>
+                {% if privilege >= 1 %}
+					<a href = "{% url 'forum:admin' %}">Admin Page</a>
+				{% endif %}
+            </div>
+        </div>
+		<div class = "elements">
+				<p>{{board.header}}</p>
+				<p>{{board.text}}</p>
+		</div>
+			{% for post in posts %}
+				<div class = "elements">
+					<p><a href = "{% url 'forum:inituser' post.poster.id %}">{{post.poster.first_name}} {{post.poster.last_name}}</a> Posted On {{post.created_at}} : </p>
+					<p>{{post.text|truncatechars:100}}</p>
+					<a href = "{% url 'forum:init' post.id %}">View Comments:</a>
+					{% if post.poster.id == request.session.id or privilege == 1 %}
+						<a href = "{% url 'forum:delete' post.id board.id %}">Delete</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+			<div class = "post">
+				<form action = "{% url 'forum:add' board.id %}" method = "post">
+					{% csrf_token %}
+					<p>Make a new post:</p>
+					<textarea name = "text" id = "text"></textarea>
+					<input type = "submit" value = "Post">
+				</form>
+			</div>
+			<br>
+			{{message|safe}}
+			{{pages|safe}}
+			<br><a href = "{% url 'forum:backboard'%}">Back</a>
+	  </div>
+	</body>
+</html>

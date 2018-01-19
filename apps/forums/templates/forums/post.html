@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Post</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'styles/forums/home.css' %}"media="screen" title="no title"  charset="utf-8">
+	</head>
+	<body>
+		<div class = "header">
+            <a href="https://www.wardrobecult.com/">Home</a>
+            <a href = "{% url 'forum:index' %}">Boards</a>
+			<a href = "{% url 'forum:logout' %}">Logout</a>
+			{% if privilege >= 1 %}
+				<a href = "{% url 'forum:admin' %}">Admin Page</a>
+			{% endif %}
+		</div>
+		<div id = "wrapper">
+			<div class = "elements">
+				<p><a href = "{% url 'forum:inituser' header.poster.id %}">{{header.poster.first_name}} {{header.poster.last_name}}</a> Posted On {{header.created_at}} : </p>
+				<p>{{header.text}}</p>
+			</div>
+			{% for comment in comments %}
+				<div class = "elements">
+					<p><a href = "{% url 'forum:user' comment.poster.id %}">{{comment.poster.first_name}} {{comment.poster.last_name}}</a> Posted On {{comment.created_at}} : </p>
+					<p>{{comment.text}}</p>
+					{% if comment.poster.id == request.session.id or privilege == 1%}
+						<a href = "{% url 'forum:delcom' post.id comment.id %}">Delete</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+			<div class = "post">
+				<form action = "{% url 'forum:comment' post.id %}" method = "post">
+					{% csrf_token %}
+					<p>Make a new comment:</p>
+					<textarea name = "text" id = "text"></textarea>
+					<input type = "submit" value = "Post">
+				</form>
+			</div>
+			{{message|safe}}
+			{{pages|safe}}
+			<br><a href = "{% url 'forum:back' board.id %}">Back</a>
+		</div>
+	</body>
+</html>

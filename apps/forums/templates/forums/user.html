@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>UserPage</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'styles/forums/home.css' %}"media="screen" title="no title"  charset="utf-8">
+	</head>
+	<body>
+		<div class = "header">
+            <a href="https://www.wardrobecult.com/">Home</a>
+            <a href = "{% url 'forum:index' %}">Boards</a>
+			<a href = "{% url 'forum:logout' %}">Logout</a>
+			{% if privilege >= 1 %}
+				<a href = "{% url 'forum:admin' %}">Admin Page</a>
+			{% endif %}
+		</div>
+		<div id = "wrapper">
+			{% if messages %}
+				{% for message in messages %}
+        			<li{% if message.ERROR %} class="{{ message.ERROR }}"{% endif %}>{{ message }}</li>
+				{% endfor %}
+			{% endif %}
+			<div class = "elements">
+				<p>{{user.first_name}} {{user.last_name}}</p><br>
+				<p>Location: {{user.location}}</p>
+				<p>Gender: {{user.gender}}</p><br>
+				<p>{{user.description}}</p><br>
+			</div>
+			{% if user.id == id %}
+				<div class = "post">
+					<form action = "{% url 'forum:userinfo' user.id %}" method = "post">
+						{% csrf_token %}	
+						<p>Update your description:</p>				
+						<textarea name = "text" id = "text"></textarea>
+						<input type = "submit" value = "Update Description">
+					</form>
+					<form action = "{% url 'forum:usergender' user.id %}" method = "post">
+						{% csrf_token %}	
+						<p>Update your gender:</p>				
+						<input type = "text" name = "text" id = "text">
+						<input type = "submit" value = "Update Gender">
+					</form>
+					<form action = "{% url 'forum:userlocation' user.id %}" method = "post">
+						{% csrf_token %}	
+						<p>Update your location:</p>				
+						<input type = "text" name = "text" id = "text">
+						<input type = "submit" value = "Update Location">
+					</form>
+					<form action = "{% url 'forum:userreset' user.id %}" method = "post">
+						{% csrf_token %}	
+						<p>Reset your password:</p>				
+						<label>Old Password:<input type = "password" name = "old" id = "old"></label>
+						<label>New Password:<input type = "password" name = "new" id = "new"></label>
+						<label>Confirm:<input type = "password" name = "confirm" id = "confirm"></label>
+						<input type = "submit" value = "Reset">
+					</form>
+					<a href = "{% url 'forum:close' user.id %}">Close account</a>
+				</div>
+				<br>
+			{% endif %}
+			{% for comment in comments %}
+				<div class = "elements">
+					<p><a href = "{% url 'forum:inituser' comment.poster.id %}">{{comment.poster.first_name}} {{comment.poster.last_name}}</a> Posted On {{comment.created_at}} : </p>
+					<p>{{comment.text}}</p>
+					{% if comment.poster.id == request.session.id or privilege == 1%}
+						<a href = "{% url 'forum:delusercom' user.id comment.id %}">Delete</a>
+					{% endif %}
+				</div>
+			{% endfor %}
+			<div class = "post">
+				<form action = "{% url 'forum:usercomment' user.id %}" method = "post">
+					{% csrf_token %}
+					<p>Post a message:</p>
+					<textarea name = "text" id = "text"></textarea>
+					<input type = "submit" value = "Send a message">
+				</form>
+			</div>
+			{% if privilege >= 1 and userprivilege < 1 %}
+				<div class = "post">
+					<form action = "{% url 'forum:promote' user.id %}" method = "post">
+						{% csrf_token %}					
+						<input type = "submit" value = "Promote to Admin">
+					</form>
+				</div>
+				<br>
+			{% endif %}
+			<br><a href = "{% url 'forum:backboard'%}">Back</a>
+		</div>
+	</body>
+</html>

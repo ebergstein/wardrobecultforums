@@ -1,0 +1,25 @@
+body{
+    width: 1200px;
+    height: 400px;
+    font-family: "Palatino";
+}
+#main{
+    width:675px;
+    height:600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 150px;
+}
+#form{
+    margin-top: 40px;
+}
+.block input{
+    display: inline-block;
+    margin: 5px;
+}
+ form{
+    border: 1px solid black;
+    border-radius: 5px;
+    padding-bottom: 30px;
+    padding-left: 20px;
+}

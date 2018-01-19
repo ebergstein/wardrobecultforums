@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Forum</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'styles/forums/home.css' %}"media="screen" title="no title"  charset="utf-8">
+	</head>
+	<body>
+		<div id="header">
+            <h1>Wardrobe Cult Forums</h1>
+            <div id="links">
+                <a href="https://www.wardrobecult.com/">Home</a>
+                <a href = "{% url 'forum:logout' %}">Logout</a>
+                {% if privilege >= 1 %}
+					<a href = "{% url 'forum:admin' %}">Admin Page</a>
+				{% endif %}
+            </div>
+        </div>
+		<div class = "menu">
+
+		</div>
+			{% for board in boards %}
+				<div class = "elements">
+					<p>{{board.header|truncatechars:100}}</p>
+					<p>{{board.description|truncatechars:100}}</p>
+					<a href = "{% url 'forum:board' board.id %}">View Posts:</a>
+				</div>
+			{% endfor %}
+			{% if privilege >= 1 %}
+				<div class = "post">
+					<form action = "{% url 'forum:addboard' %}" method = "post">
+						{% csrf_token %}					
+						<label><input type = "text" name = "header"/>Header:</label>
+						<label><textarea name = "description" id = "description"></textarea>Description:</label>
+						<input type = "submit" value = "Make new Board">
+					</form>
+				</div>
+				<br>
+			{% endif %}
+			{{message|safe}}
+			{{pages|safe}}
+	  </div>
+	</body>
+</html>
