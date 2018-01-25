@@ -52,7 +52,9 @@ class RegistrationManager(models.Manager):
     def passvalidator(self, id, password, new, confirm):
     	errors = []
     	if new != confirm:
-    		errors.append("Confirmation does not match new password")
+    		errors.append("Confirmation does not match new password.")
+    	if len(new) < 8:
+            errors.append("Your password must be at least 8 characters long.")
     	try:
             user = User.objects.get(id = id)
             print user

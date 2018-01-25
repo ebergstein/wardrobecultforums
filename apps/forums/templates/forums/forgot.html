@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Password Reset Page</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'styles/forums/home.css' %}"media="screen" title="no title"  charset="utf-8">
+	</head>
+	<body>
+		<div class = "header">
+            <a href="https://www.wardrobecult.com/">Home</a>
+		</div>
+		<div id = "wrapper">
+			{% if messages %}
+				{% for message in messages %}
+        			<li{% if message.ERROR %} class="{{ message.ERROR }}"{% endif %}>{{ message }}</li>
+				{% endfor %}
+			{% endif %}
+			<form action = "{% url 'forum:checkuser' user.id %}" method = "post">
+				{% csrf_token %}	
+				<p>Please input the exact description that is in your profile:  If your description is blank, leave the below field blank too.</p>				
+				<textarea name = "description" id = "description"></textarea>
+				<input type = "submit" value = "Submit">
+			</form>
+			<br><a href = "{% url 'login:home'%}">Back</a>
+		</div>
+	</body>
+</html>

@@ -11,6 +11,7 @@
             <a href="https://www.wardrobecult.com/">Home</a>
             <a href = "{% url 'forum:index' %}">Boards</a>
 			<a href = "{% url 'forum:logout' %}">Logout</a>
+			<a href = "{% url 'forum:inituser' user.id %}">{{user.first_name}} {{user.last_name}}</a>
 			{% if privilege >= 1 %}
 				<a href = "{% url 'forum:admin' %}">Admin Page</a>
 			{% endif %}

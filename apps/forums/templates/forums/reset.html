@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Password Reset Page</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'styles/forums/home.css' %}"media="screen" title="no title"  charset="utf-8">
+	</head>
+	<body>
+		<div class = "header">
+            <a href="https://www.wardrobecult.com/">Home</a>
+		</div>
+		<div id = "wrapper">
+			<form action = "{% url 'forum:reset' user.id %}" method = "post">
+				{% csrf_token %}				
+				<label>Please input your new password:<input type = "password" name = "password" id = "password"></label>
+				<input type = "submit" value = "Submit">
+			</form>
+			<br><a href = "{% url 'login:home'%}">Back</a>
+		</div>
+	</body>
+</html>

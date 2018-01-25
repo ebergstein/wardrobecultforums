@@ -69,3 +69,12 @@ def auto(request, first, last, email, password):
 	request.session['id'] = namer.id
 	request.session['first_name'] = namer.first_name
 	return redirect(reverse('forum:index'))
+	
+def forgot(request):
+	email = request.POST['email']
+	try:
+		user = User.objects.get(email = email)
+	except:
+		messages.add_message(request, messages.ERROR, "Invalid Email.")
+		return redirect(reverse('login:home'))
+	return redirect(reverse('forum:forgot', kwargs={'id': user.id}))

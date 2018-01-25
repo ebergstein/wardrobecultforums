@@ -9,7 +9,7 @@ from profanity import profanity
 # Create your views here.
 def board(request, id):
 	try:
-		User.objects.get(id = request.session['id'])
+		user = User.objects.get(id = request.session['id'])
 	except:
 		return redirect(reverse('login:home'))
 	board = Board.objects.get(id = id)
@@ -44,6 +44,7 @@ def board(request, id):
 				pages += "<a href = '{}'>{}</a> ".format(reverse("forum:page", kwargs={'id': i}), i)
 		pages += "</div>"
 	context = {
+		"user": user,
 		"board": board,
 		"posts": posts,
 		"message": message,
@@ -61,16 +62,16 @@ def board(request, id):
 	
 def index(request):
 	try:
-		User.objects.get(id = request.session['id'])
+		user = User.objects.get(id = request.session['id'])
 	except:
 		return redirect(reverse('login:home'))
 	boards = Board.objects.all().order_by('-created_at')
 	context = {
+		"user": user,
 		"boards": boards,
 		"privilege": 0
 	}
 	try:
-		user = User.objects.get(id = request.session['id'])
 		admincheck = Admin.objects.get(users__id = request.session['id'])
 		context['privilege'] = admincheck.privilege_level
 		print "tried"
@@ -199,7 +200,7 @@ def usercommentpage(request, id, page):
 
 def post(request, id):
 	try:
-		User.objects.get(id = request.session['id'])
+		user = User.objects.get(id = request.session['id'])
 	except:
 		return redirect(reverse('login:home'))
 	post = Post.objects.get(id = id)
@@ -225,6 +226,7 @@ def post(request, id):
 				print next.text
 				message += "<a href = '{}'>Next:</a><br>".format(reverse("forum:nextcomment", kwargs={'id': id}))
 		context = {
+			"user": user,
 			"header": post,
 			"post": post,
 			"board": board,
@@ -246,6 +248,7 @@ def post(request, id):
 			else:
 				message += "<a href = '{}'>Next:</a><br>".format(reverse("forum:nextcomment", kwargs={'id': id}))
 		context = {
+			"user": user,
 			"header": header,
 			"post": post,
 			"board": board,
@@ -265,7 +268,6 @@ def post(request, id):
 		pages += "</div>"
 	context["pages"] = pages
 	try:
-		user = User.objects.get(id = request.session['id'])
 		admincheck = Admin.objects.get(users__id = request.session['id'])
 		context['privilege'] = admincheck.privilege_level
 		print "tried"
@@ -439,7 +441,7 @@ def promote(request, id):
 	
 def admin(request):
 	try:
-		User.objects.get(id = request.session['id'])
+		user = User.objects.get(id = request.session['id'])
 	except:
 		return redirect(reverse('login:home'))
 	try:
@@ -448,6 +450,7 @@ def admin(request):
 		return redirect(reverse('forum:index'))
 	users = User.objects.all()
 	context = {
+		"browser": user,
 		"users": users,
 		"id": request.session['id'],
 		"privilege": admincheck.privilege_level
@@ -525,4 +528,46 @@ def close(request, id):
 	User.objects.get(id = id).delete()
 	del request.session['first_name']
 	del request.session['id']
+	return redirect(reverse('login:home'))
+	
+def forgot(request, id):
+	try:
+		user = User.objects.get(id = id)
+	except:
+		return redirect("login:home")
+	context = {
+		"user": user
+	}
+	return render(request, 'forums/forgot.html', context)
+	
+def checkuser(request, id):
+	try:
+		user = User.objects.get(id = id)
+	except:
+		return redirect("login:home")
+	description = request.POST['description']
+	if user.description == description:
+		context = {
+			"user": user
+		}
+		return render(request, "forums/reset.html", context)
+	else:
+		messages.add_message(request, messages.ERROR, "Description Does Not Match.")
+		return redirect(reverse("forum:forgot", kwargs={'id': id}))
+		
+def resetfromlogin(request, id):
+	try:
+		user = User.objects.get(id = id)
+	except:
+		messages.add_message(request, messages.ERROR, "Error occured with password reset.")
+		return redirect(reverse('login:home'))
+	password = request.POST['password']
+	if len(password) < 8:
+		messages.add_message(request, messages.ERROR, "Your password must be at least 8 characters long.")
+		return redirect(reverse("forum:forgot", kwargs={'id': id}))
+	prehash = User.objects.bcryptor(password)
+	pwhash = prehash['pwhash']
+	user.pwhash = pwhash
+	user.save()
+	messages.add_message(request, messages.ERROR, "Password Changed.")
 	return redirect(reverse('login:home'))

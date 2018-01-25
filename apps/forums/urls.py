@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^location/(?P<id>\d+)/$', views.location, name = "userlocation"),
     url(r'^gender/(?P<id>\d+)/$', views.gender, name = "usergender"),
     url(r'^reset/(?P<id>\d+)/$', views.reset, name = "userreset"),
+    url(r'^(?P<id>\d+)/reset/$', views.resetfromlogin, name = "reset"),
     url(r'^(?P<id>\d+)/add/$', views.add, name = "add"),
     url(r'^addboard/$', views.addboard, name = "addboard"),
     url(r'^admin/$', views.admin, name = "admin"),
@@ -34,5 +35,7 @@ urlpatterns = [
     url(r'^(?P<id>\d+)/post/(?P<board>\d+)/delete/', views.delete, name = "delete"),
     url(r'^(?P<id>\d+)/comment/(?P<comment>\d+)/delete/', views.delcom, name = "delcom"),
     url(r'^(?P<id>\d+)/comment/(?P<comment>\d+)/deleteusercomment/', views.delusercom, name = "delusercom"),
-    url(r'^logout/', views.logout, name = "logout")
+    url(r'^logout/', views.logout, name = "logout"),
+    url(r'^(?P<id>\d+)/forgot/', views.forgot, name = "forgot"),
+    url(r'^(?P<id>\d+)/check/', views.checkuser, name = "checkuser")
 ]

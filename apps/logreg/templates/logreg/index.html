@@ -36,6 +36,12 @@
 					<input type = "submit" value = "Login">
     			</form>
     		</div>
+    		<form action = "{% url 'login:forgot' %}" method = "post">
+				{% csrf_token %}
+				<p>If you forgot your password: enter your email below.</p>
+				<label>Email:<input type = "text" name = "email" id = "logemail"></label>
+				<input type = "submit" value = "Login">
+			</form>
    		</div>
   </body>
 </html>
